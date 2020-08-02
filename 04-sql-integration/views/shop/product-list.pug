@@ -17,9 +17,9 @@ block content
               h2.product__price= Number(p.price).toLocaleString()
               p.product__description= p.description
             .card__actions
-              a.btn(href="/products/" + p.id) Details
-              form(action="/cart", method="post")
-                input(type="hidden", name="id", value=p.id)
-                button.btn(type="submit") Add to Cart
+              a.btn(href="/admin/edit-product/" + p.id + "?from=user") Edit
+              form(action="/admin/delete-product/" + p.id, method="post")
+                input(type="hidden", name="from", value="user")
+                button.btn(type="submit") Delete
     else
       h1 No Products Found!

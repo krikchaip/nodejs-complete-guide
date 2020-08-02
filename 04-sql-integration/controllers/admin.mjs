@@ -13,38 +13,39 @@ router.get('/add-product', (_, res) => {
 
 router.post('/add-product', (req, res) => {
   const { title, imageUrl, price, description } = req.body
-  const product = new Product({ title, imageUrl, description, price })
-
-  product.save()
-
-  res.redirect('/admin/products')
+  req.user
+    .createProduct({ title, imageUrl, description, price })
+    .then(() => res.redirect('/admin/products'))
 })
 
 router.get('/edit-product/:id', (req, res) => {
   const { id } = req.params
+  const { from } = req.query
+
   Product.findById(id, (product) => {
     if (!product) return res.redirect('/')
     res.render('admin/edit-product', {
       title: 'Edit Product',
       path: '/admin/add-product',
+      redirect: from === 'user' ? '/products' : '/admin/products',
       product,
     })
   })
 })
 
 router.post('/edit-product/:id', (req, res) => {
-  const { title, imageUrl, price, description } = req.body
+  const { title, imageUrl, price, description, redirect } = req.body
   const { id } = req.params
   const product = new Product({ id, title, imageUrl, description, price })
 
-  product.update()
-
-  res.redirect('/admin/products')
+  product.update(() => {
+    res.redirect(redirect)
+  })
 })
 
 router.post('/delete-product/:id', (req, res) => {
   Product.delete(req.params.id, () => {
-    res.redirect('/admin/products')
+    res.redirect(req.body.from === 'user' ? '/products' : '/admin/products')
   })
 })
 

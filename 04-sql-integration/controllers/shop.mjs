@@ -15,19 +15,16 @@ router.get('/', (_, res) => {
   })
 })
 
-router.get('/products', (_, res) => {
-  Product.fetchAll((products) => {
-    res.render('shop/product-list', {
-      title: 'All Products',
-      path: '/products',
-      prods: products,
-    })
+router.get('/products', async (req, res) => {
+  res.render('shop/product-list', {
+    title: 'All Products',
+    path: '/products',
+    prods: await req.user.getProducts(),
   })
 })
 
 router.get('/products/:id', (req, res) => {
-  const { id } = req.params
-  Product.findById(id, (product) => {
+  Product.findById(req.params.id, (product) => {
     res.render('shop/product-detail', {
       title: product.title,
       path: '/products',
@@ -36,8 +33,8 @@ router.get('/products/:id', (req, res) => {
   })
 })
 
-router.get('/cart', (_, res) => {
-  Cart.getCart((products) => {
+router.get('/cart', async (req, res) => {
+  Cart.getCart(req.user.id, (products) => {
     res.render('shop/cart', {
       title: 'Your Cart',
       path: '/cart',
@@ -47,21 +44,14 @@ router.get('/cart', (_, res) => {
 })
 
 router.post('/cart', (req, res) => {
-  Cart.addProduct(req.body.id, () => {
+  Cart.addProduct(req.user.id, req.body.id, () => {
     res.redirect('/cart')
   })
 })
 
 router.post('/cart-delete-item', (req, res) => {
-  Cart.deleteProduct(req.body.productId, () => {
+  Cart.deleteProduct(req.user.id, req.body.productId, () => {
     res.redirect('/cart')
-  })
-})
-
-router.get('/orders', (_, res) => {
-  res.render('shop/orders', {
-    title: 'Your Orders',
-    path: '/orders',
   })
 })
 
