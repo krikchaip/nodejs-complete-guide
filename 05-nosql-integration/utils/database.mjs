@@ -10,7 +10,7 @@ const config = {
 const client = new MongoClient(config.url, { useUnifiedTopology: true })
 
 const db = new Proxy(
-  { _ref: null, end: () => client.close() },
+  { _ref: null },
   {
     get(target, key) {
       if (key in target) return target[key]
@@ -28,6 +28,7 @@ const db = new Proxy(
 export async function connect() {
   await client.connect()
   db._ref = client.db(config.database)
+  return client
 }
 
 export default db

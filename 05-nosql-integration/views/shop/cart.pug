@@ -12,7 +12,7 @@ block content
             h1= p.productData.title
             h2= 'Quantity: ' + p.qty
             form(action="/cart-delete-item", method="post")
-              input(type="hidden", name="productId", value= p.productData.id)
+              input(type="hidden", name="productId", value=p.productData.id)
               button.btn.danger(type="submit") Delete
     else
       h1 No Products in Cart!

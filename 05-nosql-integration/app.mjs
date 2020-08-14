@@ -6,7 +6,8 @@ import shop from './controllers/shop.mjs'
 
 import User from './models/user.mjs'
 
-import db, { connect as dbConnect } from './utils/database.mjs'
+import { connect as dbConnect } from './utils/database.mjs'
+import { connect as odmConnect } from './utils/mongoose.mjs'
 import { __rootdir } from './utils/helpers.mjs'
 
 const app = express()
@@ -31,15 +32,18 @@ app.use((_, res) => {
 })
 
 async function bootstrap() {
-  await dbConnect()
-  const server = app.listen(3000)
+  const dbConnection = await dbConnect()
+  const odmConnection = await odmConnect()
 
-  server.on('close', () => {
-    db.end()
-  })
+  const server = app.listen(3000)
 
   process.on('SIGINT', () => server.close())
   process.on('uncaughtException', () => server.close())
+
+  server.on('close', () => {
+    dbConnection.close()
+    odmConnection.disconnect()
+  })
 }
 
 bootstrap()

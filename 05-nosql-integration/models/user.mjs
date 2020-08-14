@@ -1,12 +1,36 @@
 import mongodb from 'mongodb'
-
-const { ObjectID } = mongodb
-
-import Product from './product.mjs'
+import mongoose from 'mongoose'
 
 import db from '../utils/database.mjs'
 
+const { ObjectID } = mongodb
+const { Schema, model } = mongoose
+
 class User {
+  // ? mongoose schema
+  static Schema = new Schema(
+    {
+      __v: { select: false },
+      name: String,
+      email: String,
+      cart: [
+        {
+          _id: false,
+          productData: {
+            type: Schema.Types.ObjectId,
+            ref: 'product',
+            alias: '_id',
+          },
+          qty: Number,
+        },
+      ],
+    },
+    { versionKey: false, collection: 'user' }
+  )
+
+  // ? mongoose model
+  static Model = model('user', User.Schema)
+
   constructor({ id, name, email, cart = [] }) {
     if (id) {
       this.id = new ObjectID(id)
@@ -18,73 +42,112 @@ class User {
   }
 
   async create() {
-    return db.user.insertOne(this)
+    // ? using mongo driver
+    // return db.user.insertOne(this)
+
+    // ? using mongoose ODM
+    return User.Model.create(this)
   }
 
   static async findById(id) {
-    const { _id, ...data } = await db.user.findOne({ _id: new ObjectID(id) })
-    return new User({ id: _id, ...data })
+    // ? using mongo driver
+    // const { _id, ...data } = await db.user.findOne({ _id: new ObjectID(id) })
+    // return new User({ id: _id, ...data })
+
+    // ? using mongoose ODM
+    return new User(await User.Model.findById(id))
   }
 
   async createProduct(product) {
-    const prod = await product.save()
-    return db.product.updateOne(
-      { _id: new ObjectID(prod.insertedId) },
-      {
-        $set: {
-          userId: this.id,
-        },
-      }
-    )
+    // ? using mongo driver
+    // const prod = await product.save()
+    // return db.product.updateOne(
+    //   { _id: new ObjectID(prod.insertedId) },
+    //   { $set: { userId: this.id } }
+    // )
+
+    // ? using mongoose ODM
+    const p = await product.save()
+    p.userId = this.id
+    return p.save()
   }
 
   async getProducts() {
-    const [{ products }] = await db.user
-      .aggregate([
-        {
-          $lookup: {
-            from: 'product',
-            localField: '_id',
-            foreignField: 'userId',
-            as: 'products',
-          },
-        },
-        { $match: { _id: this.id } },
-        { $project: { _id: false } },
-      ])
-      .toArray()
+    // ? using mongo driver
+    // return db.product
+    //   .find({ userId: this.id })
+    //   .project({ userId: false })
+    //   .map(({ _id, ...data }) => ({ id: _id, ...data }))
+    //   .toArray()
 
-    return products.map(({ _id, userId, ...data }) => ({
-      id: _id,
-      ...data,
-    }))
+    // ? using mongoose ODM
+    return model('product').find({ userId: this.id })
   }
 
   async getCart() {
-    const { cart = [] } = await db.user.findOne({ _id: this.id })
-    return cart
+    // ? using mongo driver
+    // return db.user
+    //   .aggregate([
+    //     { $match: { _id: this.id } },
+    //     { $unwind: '$cart' },
+    //     { $replaceWith: '$cart' },
+    //     {
+    //       $lookup: {
+    //         from: 'product',
+    //         let: { productId: '$productData' },
+    //         pipeline: [
+    //           { $match: { $expr: { $eq: ['$_id', '$$productId'] } } },
+    //           { $addFields: { id: '$_id' } },
+    //           { $project: { _id: false, userId: false } },
+    //         ],
+    //         as: 'productData',
+    //       },
+    //     },
+    //     { $unwind: '$productData' },
+    //   ])
+    //   .toArray()
+
+    // ? using mongoose ODM
+    return User.Model.findById(this.id)
+      .populate('cart.productData', '-userId')
+      .map(({ cart }) => cart)
   }
 
   async addToCart(productId) {
-    const productData = await Product.findById(productId)
+    // ? using mongo driver
+    // const { modifiedCount } = await db.user.updateOne(
+    //   { _id: this.id, 'cart.productData': new ObjectID(productId) },
+    //   { $inc: { 'cart.$.qty': 1 } }
+    // )
 
-    const { modifiedCount } = await db.user.updateOne(
-      { _id: this.id, 'cart.productData.id': productData.id },
-      { $inc: { 'cart.$.qty': 1 } }
-    )
+    // if (modifiedCount) return
 
-    if (modifiedCount) return
+    // return db.user.updateOne(
+    //   { _id: this.id },
+    //   { $push: { cart: { productData: new ObjectID(productId), qty: 1 } } }
+    // )
 
-    return db.user.updateOne(
-      { _id: this.id },
-      { $push: { cart: { productData, qty: 1 } } }
-    )
+    // ? using mongoose ODM
+    const user = await User.Model.findById(this.id)
+    const itemFound = user.cart.id(productId)
+
+    if (itemFound) itemFound.qty++
+    else user.cart.push({ productData: productId, qty: 1 })
+
+    return user.save()
   }
 
   async removeFromCart(productId) {
-    return db.user.updateOne(
+    // ? using mongo driver
+    // return db.user.updateOne(
+    //   { _id: this.id },
+    //   { $pull: { cart: { productData: new ObjectID(productId) } } }
+    // )
+
+    // ? using mongoose ODM
+    return User.Model.updateOne(
       { _id: this.id },
-      { $pull: { cart: { 'productData.id': new ObjectID(productId) } } }
+      { $pull: { cart: { productData: productId } } }
     )
   }
 }
