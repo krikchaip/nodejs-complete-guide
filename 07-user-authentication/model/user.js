@@ -9,7 +9,8 @@ const User = new Schema(
     lastname: String,
     age: Number,
     sex: { type: String, enum: ['', 'male', 'female'] },
-    bio: String
+    bio: String,
+    token: { passwordReset: String, passwordResetExpire: Date }
   },
   { versionKey: false, toJSON: { virtuals: true } }
 )

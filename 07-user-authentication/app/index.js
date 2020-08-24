@@ -22,18 +22,16 @@ app.set('view engine', 'pug')
 
 app.use(express.static(path.join(__dirname, '..', 'public')))
 app.use(express.urlencoded({ extended: false }))
-app.use(
-  session({
-    secret: 'nodejs-complete-guide',
-    resave: false,
-    saveUninitialized: false,
-    store: new MongoStore({
-      mongooseConnection: mongoose.connection,
-      collection: 'session',
-      stringify: false
-    })
+app.use(session({
+  secret: 'nodejs-complete-guide',
+  resave: false,
+  saveUninitialized: false,
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection,
+    collection: 'session',
+    stringify: false
   })
-)
+}))
 app.use(csurf())
 app.use(flash())
 

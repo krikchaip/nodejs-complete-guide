@@ -39,10 +39,6 @@
   text-decoration: none !important;
 }
 
-.form {
-  margin-bottom: 0.5rem;
-}
-
 .form > *:not(:last-child) {
   margin-bottom: 0.2rem;
 }
@@ -64,7 +60,7 @@
 }
 
 .textbox {
-  width: 225px;
+  width: 250px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -73,6 +69,7 @@
 .error {
   width: 40%;
   padding: 0.3rem 0.6rem;
+  margin-top: 0.5rem;
 
   color: crimson;
   font-family: sans-serif;
