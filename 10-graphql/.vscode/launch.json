@@ -1,0 +1,36 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Server: attach",
+      "type": "node",
+      "request": "attach",
+      "port": 5001,
+      "smartStep": true,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/server",
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/?(../)node_modules/**"
+      ]
+    },
+    {
+      "name": "Test",
+      "type": "node",
+      "request": "attach",
+      "port": 5002,
+      "smartStep": true,
+      "preLaunchTask": "test-debug:create",
+      "postDebugTask": "test-debug:remove",
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/test",
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/?(../)node_modules/**"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "test-debug:create",
+      "dependsOn": ["test-debug:remove"],
+      "type": "shell",
+      "command": "docker",
+      "args": [
+        "run",
+        "--name",
+        "test-debug",
+        "--workdir",
+        "/test",
+        "--volume",
+        "${workspaceFolder}:/test",
+        "--publish",
+        "5002:5002",
+        "--detach",
+        "--interactive",
+        "--tty",
+        "node:14.9-alpine",
+        "yarn",
+        "test:debug"
+      ]
+    },
+    {
+      "label": "test-debug:remove",
+      "type": "shell",
+      "command": "docker",
+      "args": ["rm", "-f", "test-debug", "||", "true"]
+    }
+  ]
+}
