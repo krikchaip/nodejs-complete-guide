@@ -1,7 +1,7 @@
 {
   "main": "build/server.js",
   "scripts": {
-    "dev": "ts-node-dev --inspect-brk=0.0.0.0:5001 --respawn -- server.ts",
+    "dev": "ts-node-dev -r tsconfig-paths/register --inspect=0.0.0.0:5001 --respawn -- server.ts",
     "test": "jest --watchAll",
     "test:debug": "node --inspect-brk=0.0.0.0:5002 node_modules/.bin/jest --runInBand --watchAll",
     "build": "tsc --outDir build",
@@ -19,6 +19,7 @@
     "jest": "^26.5.3",
     "ts-jest": "^26.4.1",
     "ts-node-dev": "^1.0.0-pre.63",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^4.0.3"
   }
 }

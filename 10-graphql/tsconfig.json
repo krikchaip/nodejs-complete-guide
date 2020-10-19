@@ -6,9 +6,9 @@
     "resolveJsonModule": true,
     "skipLibCheck": false,
     "strict": true,
-    "target": "ES6",
+    "target": "es6",
     "module": "CommonJS",
-    "lib": ["ES2020"],
+    "lib": ["esnext"],
     "baseUrl": ".",
     "paths": {
       "@config/*": ["config/*"],
