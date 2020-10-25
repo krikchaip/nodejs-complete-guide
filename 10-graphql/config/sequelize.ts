@@ -9,6 +9,7 @@ const sequelize = new Sequelize({
   dialect: 'postgres',
   timezone: '+07:00',
   typeValidation: true,
+  define: { freezeTableName: true, timestamps: false },
   logging: sql =>
     console.log(
       `\x1b[1m${new Date().toUTCString()}\x1b[0m\n\x1b[36m${sql}\x1b[0m\n`
