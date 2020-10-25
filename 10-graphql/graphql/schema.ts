@@ -8,6 +8,7 @@ export default buildSchema(`#graphql
 
   type Query {
     healthcheck: String
+    users: [User]
   }
 
   type Mutation {
@@ -19,17 +20,17 @@ export default buildSchema(`#graphql
   }
 
   type User {
-    id: ID!
+    id: ID
     email: String
     password: String
     name: String
     status: String
-    posts: [Post!]
+    posts: [Post]
   }
 
   type Post {
-    id: ID!
-    creator: User!
+    id: ID
+    creator: User
     title: String
     content: String
     imageURL: String

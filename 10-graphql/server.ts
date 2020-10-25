@@ -17,6 +17,6 @@ const app = express()
 app.use('/graphql', graphqlHTTP({ schema, rootValue, graphiql: true }))
 
 app.listen(3000, async () => {
-  await sequelize.sync({ force: true })
+  await sequelize.sync({ alter: true })
   console.log('Server is running at port 3000.')
 })

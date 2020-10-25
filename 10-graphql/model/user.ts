@@ -1,11 +1,31 @@
-import { DataTypes } from 'sequelize'
+/// <reference path="../typings/global.d.ts" />
+
+import { DataTypes, Model } from 'sequelize'
 import bcrypt from 'bcrypt'
 
 import sequelize from '@config/sequelize'
+import Post from '@model/post'
 
-const User = sequelize.define('user', {
+interface UserAttributes {
+  id: UUID
+  email: STRING
+  password: STRING
+  name?: STRING
+  status?: TEXT
+}
+
+interface UserCreationAttributes extends Omit<UserAttributes, 'id'> {}
+
+interface UserInstance
+  extends Model<UserAttributes, UserCreationAttributes>,
+    UserAttributes {
+  posts?: typeof Post[]
+}
+
+const User = sequelize.define<UserInstance>('user', {
   id: {
     type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
   email: {
@@ -17,8 +37,8 @@ const User = sequelize.define('user', {
   password: {
     type: DataTypes.STRING,
     allowNull: false,
-    async set(val: string) {
-      this.setDataValue('password', await bcrypt.hash(val, 10))
+    set(val: string) {
+      this.setDataValue('password', bcrypt.hashSync(val, 10))
     }
   },
   name: DataTypes.STRING,

@@ -1,8 +1,23 @@
-import { DataTypes } from 'sequelize'
+/// <reference path="../typings/global.d.ts" />
+
+import { DataTypes, Model } from 'sequelize'
 
 import sequelize from '@config/sequelize'
 
-const Post = sequelize.define('post', {
+interface PostAttributes {
+  id: UUID
+  title: STRING
+  content?: TEXT
+  imageURL?: TEXT
+}
+
+interface PostCreationAttributes extends Omit<PostAttributes, 'id'> {}
+
+interface PostInstance
+  extends Model<PostAttributes, PostCreationAttributes>,
+    PostAttributes {}
+
+const Post = sequelize.define<PostInstance>('post', {
   id: {
     type: DataTypes.UUID,
     primaryKey: true
