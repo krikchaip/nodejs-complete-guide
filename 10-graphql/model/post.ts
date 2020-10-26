@@ -13,7 +13,7 @@ interface PostAttributes {
 
 interface PostCreationAttributes extends Omit<PostAttributes, 'id'> {}
 
-interface PostInstance
+export interface PostInstance
   extends Model<PostAttributes, PostCreationAttributes>,
     PostAttributes {}
 

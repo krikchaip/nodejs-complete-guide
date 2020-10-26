@@ -1,10 +1,10 @@
 /// <reference path="../typings/global.d.ts" />
 
-import { DataTypes, Model } from 'sequelize'
+import { Association, DataTypes, Model, ModelCtor } from 'sequelize'
 import bcrypt from 'bcrypt'
 
 import sequelize from '@config/sequelize'
-import Post from '@model/post'
+import { PostInstance } from '@model/post'
 
 interface UserAttributes {
   id: UUID
@@ -19,10 +19,16 @@ interface UserCreationAttributes extends Omit<UserAttributes, 'id'> {}
 interface UserInstance
   extends Model<UserAttributes, UserCreationAttributes>,
     UserAttributes {
-  posts?: typeof Post[]
+  posts?: ModelCtor<PostInstance>[]
 }
 
-const User = sequelize.define<UserInstance>('user', {
+interface UserCtor extends ModelCtor<UserInstance> {
+  associations: {
+    posts: Association<UserInstance, PostInstance>
+  }
+}
+
+const User = <UserCtor>sequelize.define<UserInstance>('user', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
