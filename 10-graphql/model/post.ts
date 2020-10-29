@@ -1,5 +1,3 @@
-/// <reference path="../typings/global.d.ts" />
-
 import { DataTypes, Model } from 'sequelize'
 
 import sequelize from '@config/sequelize'

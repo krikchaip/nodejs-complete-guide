@@ -1,7 +1,7 @@
 {
   "main": "build/server.js",
   "scripts": {
-    "dev": "ts-node-dev -r tsconfig-paths/register --inspect=0.0.0.0:5001 --respawn -- server.ts",
+    "dev": "ts-node-dev --inspect=0.0.0.0:5001 -r tsconfig-paths/register --respawn -- server.ts",
     "test": "jest --watchAll",
     "test:debug": "node --inspect-brk=0.0.0.0:5002 node_modules/.bin/jest --runInBand --watchAll",
     "build": "tsc --outDir build",

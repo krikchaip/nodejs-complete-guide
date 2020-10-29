@@ -1,5 +1,3 @@
-/// <reference path="../typings/global.d.ts" />
-
 import { Association, DataTypes, Model, ModelCtor } from 'sequelize'
 import bcrypt from 'bcrypt'
 

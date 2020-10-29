@@ -12,10 +12,7 @@
       "smartStep": true,
       "localRoot": "${workspaceFolder}",
       "remoteRoot": "/server",
-      "skipFiles": [
-        "<node_internals>/**",
-        "${workspaceFolder}/?(../)node_modules/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "name": "Test",
@@ -27,10 +24,7 @@
       "postDebugTask": "test-debug:remove",
       "localRoot": "${workspaceFolder}",
       "remoteRoot": "/test",
-      "skipFiles": [
-        "<node_internals>/**",
-        "${workspaceFolder}/?(../)node_modules/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }
