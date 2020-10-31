@@ -7,31 +7,34 @@ export default buildSchema(`#graphql
   }
 
   type Query {
-    healthcheck: String
-    users: [User]
+    user: UserQuery
   }
 
   type Mutation {
-    create: CreateMutation
+    user: UserMutation
   }
 
-  type CreateMutation {
-    user(email: String!, password: String!): User
+  type UserQuery {
+    list: [User!]!
+  }
+
+  type UserMutation {
+    create(email: String!, password: String!): User!
   }
 
   type User {
-    id: ID
-    email: String
-    password: String
+    id: ID!
+    email: String!
+    password: String!
     name: String
     status: String
-    posts: [Post]
+    posts: [Post!]!
   }
 
   type Post {
-    id: ID
-    creator: User
-    title: String
+    id: ID!
+    creator: User!
+    title: String!
     content: String
     imageURL: String
   }

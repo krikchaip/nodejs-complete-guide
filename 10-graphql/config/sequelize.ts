@@ -1,5 +1,7 @@
 import { Sequelize } from 'sequelize'
 
+// TODO custom config options based on NODE_ENV
+// TODO highlight SQL statements
 const sequelize = new Sequelize({
   host: 'db',
   port: 5432,
