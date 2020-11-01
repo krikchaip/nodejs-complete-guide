@@ -8,11 +8,11 @@ const SECRET = `
 `
 
 export type TokenPayload = {
-  role?: String
+  role?: string
 }
 
 export type VerifyOptions = {
-  role: string
+  role?: string
 }
 
 export default {

@@ -28,6 +28,6 @@ app.use(
 )
 
 app.listen(3000, async () => {
-  await sequelize.sync({ alter: true })
+  // await sequelize.sync({ force: true })
   console.log('Server is running at port 3000.')
 })

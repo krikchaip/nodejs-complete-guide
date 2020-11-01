@@ -2,15 +2,21 @@ import { Request } from 'express'
 import validator from 'validator'
 
 import token from '@lib/token'
-import User, { matchPassword } from '@model/user'
+import User, { matchPassword, Role } from '@model/user'
 
 export default {
   user: {
-    list: async () => {
+    list: async (args: { token: string }) => {
+      if (!token.verify(args.token, { role: Role.ADMIN }))
+        throw new Error('Unauthorized!')
+
       const users = await User.findAll({ include: 'posts' })
       return users.map(user => user.toJSON())
     },
-    create: async (args: { email: string; password: string }, req: Request) => {
+    create: async (
+      args: { email: string; password: string; role: Role },
+      req: Request
+    ) => {
       const errors = [
         !validator.isEmail(args.email) && 'Wrong email format!',
         validator.isEmpty(args.password) && 'No password entered!',
@@ -44,7 +50,7 @@ export default {
       }
 
       return {
-        token: token.sign({ sub: user.id }),
+        token: token.sign({ sub: user.id, role: user.role }),
         data: user.toJSON()
       }
     }

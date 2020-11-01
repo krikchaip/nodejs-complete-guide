@@ -15,18 +15,24 @@ export default buildSchema(`#graphql
   }
 
   type UserQuery {
-    list: [User!]!
+    list(token: String!): [User!]!
     login(email: String!, password: String!): UserLogin!
   }
 
   type UserMutation {
-    create(email: String!, password: String!): User!
+    create(email: String!, password: String!, role: Role = USER): User!
+  }
+
+  enum Role {
+    USER
+    ADMIN
   }
 
   type User {
     id: ID!
     email: String!
     password: String!
+    role: Role!
     name: String
     status: String
     posts: [Post!]!

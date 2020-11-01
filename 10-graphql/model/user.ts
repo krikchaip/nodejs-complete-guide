@@ -8,6 +8,7 @@ interface UserAttributes {
   id: UUID
   email: STRING
   password: STRING
+  role: Role
   name?: STRING
   status?: TEXT
 }
@@ -24,6 +25,11 @@ interface UserCtor extends ModelCtor<UserInstance> {
   associations: {
     posts: Association<UserInstance, PostInstance>
   }
+}
+
+export enum Role {
+  USER = 'USER',
+  ADMIN = 'ADMIN'
 }
 
 const User = <UserCtor>sequelize.define<UserInstance>('user', {
@@ -44,6 +50,11 @@ const User = <UserCtor>sequelize.define<UserInstance>('user', {
     set(val: string) {
       this.setDataValue('password', bcrypt.hashSync(val, 10))
     }
+  },
+  role: {
+    type: DataTypes.ENUM,
+    values: [Role.USER, Role.ADMIN],
+    allowNull: false
   },
   name: DataTypes.STRING,
   status: DataTypes.TEXT
