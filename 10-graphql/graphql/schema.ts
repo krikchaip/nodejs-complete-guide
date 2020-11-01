@@ -7,15 +7,16 @@ export default buildSchema(`#graphql
   }
 
   type Query {
-    user: UserQuery
+    user: UserQuery!
   }
 
   type Mutation {
-    user: UserMutation
+    user: UserMutation!
   }
 
   type UserQuery {
     list: [User!]!
+    login(email: String!, password: String!): UserLogin!
   }
 
   type UserMutation {
@@ -29,6 +30,11 @@ export default buildSchema(`#graphql
     name: String
     status: String
     posts: [Post!]!
+  }
+
+  type UserLogin {
+    token: String!
+    data: User!
   }
 
   type Post {

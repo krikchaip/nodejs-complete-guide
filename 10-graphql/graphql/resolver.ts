@@ -1,7 +1,8 @@
 import { Request } from 'express'
 import validator from 'validator'
 
-import User from '@model/user'
+import token from '@lib/token'
+import User, { matchPassword } from '@model/user'
 
 export default {
   user: {
@@ -30,6 +31,21 @@ export default {
         return { ...user, posts: [] }
       } catch (error) {
         throw new Error(error.message || 'Internal server error!')
+      }
+    },
+    login: async (args: { email: string; password: string }) => {
+      const user = await User.findOne({
+        where: { email: args.email },
+        include: 'posts'
+      })
+
+      if (!user || !(await matchPassword(user, args.password))) {
+        throw new Error("Wrong password or email doesn't exists!")
+      }
+
+      return {
+        token: token.sign({ sub: user.id }),
+        data: user.toJSON()
       }
     }
   }

@@ -49,4 +49,8 @@ const User = <UserCtor>sequelize.define<UserInstance>('user', {
   status: DataTypes.TEXT
 })
 
+export const matchPassword = async (user: UserInstance, password: string) => {
+  return bcrypt.compare(password, user.password)
+}
+
 export default User
