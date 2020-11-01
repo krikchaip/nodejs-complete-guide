@@ -1,2 +1,5 @@
 # compiled artifacts
 build
+
+# error logs
+**/*error.log

@@ -14,7 +14,18 @@ const app = express()
  *   POST localhost:3000/graphql
  *   application/json { "query": "{ healthcheck }" }
  */
-app.use('/graphql', graphqlHTTP({ schema, rootValue, graphiql: true }))
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema,
+    rootValue,
+    customFormatErrorFn: error => {
+      if (!error.originalError) return error
+      return { message: error.originalError.message }
+    },
+    graphiql: true
+  })
+)
 
 app.listen(3000, async () => {
   await sequelize.sync({ alter: true })
