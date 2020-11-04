@@ -1,4 +1,10 @@
-import { Association, DataTypes, Model, ModelCtor } from 'sequelize'
+import {
+  Association,
+  DataTypes,
+  HasManyCreateAssociationMixin,
+  Model,
+  ModelCtor
+} from 'sequelize'
 import bcrypt from 'bcrypt'
 
 import sequelize from '@config/sequelize'
@@ -18,7 +24,7 @@ interface UserCreationAttributes extends Omit<UserAttributes, 'id'> {}
 interface UserInstance
   extends Model<UserAttributes, UserCreationAttributes>,
     UserAttributes {
-  posts?: ModelCtor<PostInstance>[]
+  createPost: HasManyCreateAssociationMixin<PostInstance>
 }
 
 interface UserCtor extends ModelCtor<UserInstance> {

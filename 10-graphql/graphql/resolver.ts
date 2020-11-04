@@ -3,6 +3,7 @@ import validator from 'validator'
 
 import token from '@lib/token'
 import User, { matchPassword, Role } from '@model/user'
+import Post from '@model/post'
 
 export default {
   user: {
@@ -53,6 +54,45 @@ export default {
         token: token.sign({ sub: user.id, role: user.role }),
         data: user.toJSON()
       }
+    }
+  },
+  post: {
+    list: async () => {
+      const posts = (await Post.findAll({ include: 'user' }))
+        .map(post => post.toJSON() as any)
+        .map(({ user: creator, ...post }) => ({ ...post, creator }))
+
+      return posts
+    },
+    create: async (args: {
+      data: {
+        creator: string
+        title: string
+        content?: string
+        imageURL?: string
+      }
+    }) => {
+      const errors = [
+        validator.isEmpty(args.data.title) && 'Please enter a title!',
+        args.data.imageURL !== undefined &&
+          (!args.data.imageURL.length ||
+            !validator.isURL(args.data.imageURL)) &&
+          'URL malformed!'
+      ]
+        .filter((msg): msg is string => !!msg)
+        .map(msg => new Error(msg))
+
+      if (errors.length) {
+        throw errors[0]
+      }
+
+      const user = await User.findByPk(args.data.creator)
+      if (!user) throw new Error('User not found!')
+
+      const post = await user.createPost(args.data as any)
+      await user.reload({ include: 'posts' })
+
+      return { ...post.toJSON(), creator: user.toJSON() }
     }
   }
 }

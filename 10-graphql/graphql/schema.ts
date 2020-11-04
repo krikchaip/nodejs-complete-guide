@@ -8,10 +8,12 @@ export default buildSchema(`#graphql
 
   type Query {
     user: UserQuery!
+    post: PostQuery!
   }
 
   type Mutation {
     user: UserMutation!
+    post: PostMutation!
   }
 
   type UserQuery {
@@ -21,6 +23,21 @@ export default buildSchema(`#graphql
 
   type UserMutation {
     create(email: String!, password: String!, role: Role = USER): User!
+  }
+
+  type PostQuery {
+    list: [Post!]!
+  }
+
+  type PostMutation {
+    create(data: PostCreate!): Post!
+  }
+
+  input PostCreate {
+    creator: ID!
+    title: String!
+    content: String
+    imageURL: String
   }
 
   enum Role {
