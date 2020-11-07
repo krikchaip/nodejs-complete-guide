@@ -8,6 +8,7 @@ const SECRET = `
 `
 
 export type TokenPayload = {
+  sub: string
   role?: string
 }
 
@@ -19,9 +20,11 @@ export default {
   verify: (token: string, options?: VerifyOptions) => {
     const payload = jwt.verify(token, SECRET) as TokenPayload
 
-    if (options?.role) return payload.role === options.role
+    if (options?.role) {
+      return payload.role === options.role ? payload : null
+    }
 
-    return true
+    return payload
   },
   sign: <T extends Record<string, unknown>>(payload: T) => {
     return jwt.sign(payload, SECRET, { expiresIn: '1h' })

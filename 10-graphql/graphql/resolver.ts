@@ -1,14 +1,14 @@
 import { Request } from 'express'
 import validator from 'validator'
 
-import token from '@lib/token'
+import Token from '@lib/token'
 import User, { matchPassword, Role } from '@model/user'
 import Post from '@model/post'
 
 export default {
   user: {
     list: async (args: { token: string }) => {
-      if (!token.verify(args.token, { role: Role.ADMIN }))
+      if (!Token.verify(args.token, { role: Role.ADMIN }))
         throw new Error('Unauthorized!')
 
       const users = await User.findAll({ include: 'posts' })
@@ -40,6 +40,28 @@ export default {
         throw new Error(error.message || 'Internal server error!')
       }
     },
+    update: async (args: {
+      token: string
+      data: Partial<{ name: string; status: string }>
+    }) => {
+      const { token, data } = args
+      const payload = Token.verify(token)
+
+      if (!payload) throw new Error('Unauthorized!')
+
+      try {
+        const user = await User.findByPk(payload.sub)
+        if (!user) throw new Error("User doesn't exists!")
+
+        Object.assign(user, data)
+        await user.save()
+        await user.reload({ include: 'posts' })
+
+        return user.toJSON()
+      } catch (error) {
+        throw new Error(error.message || 'Internal server error!')
+      }
+    },
     login: async (args: { email: string; password: string }) => {
       const user = await User.findOne({
         where: { email: args.email },
@@ -51,7 +73,7 @@ export default {
       }
 
       return {
-        token: token.sign({ sub: user.id, role: user.role }),
+        token: Token.sign({ sub: user.id, role: user.role }),
         data: user.toJSON()
       }
     }

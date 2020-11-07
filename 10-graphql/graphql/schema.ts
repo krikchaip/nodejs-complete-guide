@@ -23,6 +23,12 @@ export default buildSchema(`#graphql
 
   type UserMutation {
     create(email: String!, password: String!, role: Role = USER): User!
+    update(token: String!, data: UserUpdate!): User!
+  }
+
+  input UserUpdate {
+    name: String
+    status: String
   }
 
   type PostQuery {
