@@ -8,7 +8,7 @@
     "express-async-handler": "^1.1.4",
     "express-session": "^1.17.1",
     "mongoose": "^5.9.28",
-    "pug": "^3.0.0"
+    "pug": "^3.0.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
