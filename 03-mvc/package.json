@@ -3,7 +3,7 @@
     "start": "nodemon app.mjs"
   },
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "pug": "^3.0.0"
   },
   "devDependencies": {
